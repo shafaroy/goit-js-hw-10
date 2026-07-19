@@ -1,0 +1,1 @@
+.timer{display:flex;gap:24px;margin-top:32px}.field{display:flex;flex-direction:column;align-items:center}.value{font-size:40px;font-weight:500;line-height:1.2}.label{font-size:16px;text-transform:uppercase}#datetime-picker{width:272px;height:40px;margin-right:8px}button[data-start]{width:75px;height:40px}
