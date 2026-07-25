@@ -5,26 +5,26 @@ import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 import '../css/1-timer.css';
 
-const startBtn = document.querySelector('[data-start]');
 const input = document.querySelector('#datetime-picker');
+const startBtn = document.querySelector('[data-start]');
+
 const daysEl = document.querySelector('[data-days]');
 const hoursEl = document.querySelector('[data-hours]');
 const minutesEl = document.querySelector('[data-minutes]');
 const secondsEl = document.querySelector('[data-seconds]');
 
-let userSelectedDate = null;
-let timerId = null;
+startBtn.disabled = true;
 
-flatpickr(input, {
+let userSelectedDate;
+let timerId;
+
+const options = {
   enableTime: true,
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
-
   onClose(selectedDates) {
-    userSelectedDate = selectedDates[0];
-
-    if (userSelectedDate <= new Date()) {
+    if (selectedDates[0].getTime() <= Date.now()) {
       startBtn.disabled = true;
 
       iziToast.error({
@@ -35,19 +35,27 @@ flatpickr(input, {
       return;
     }
 
+    userSelectedDate = selectedDates[0];
     startBtn.disabled = false;
   },
-});
+};
+
+flatpickr(input, options);
 
 startBtn.addEventListener('click', () => {
   startBtn.disabled = true;
   input.disabled = true;
 
+  // Okamžitě zobraz čas
+  const deltaTime = userSelectedDate - Date.now();
+  updateTimer(convertMs(deltaTime));
+
   timerId = setInterval(() => {
-    const currentTime = Date.now();
-    const deltaTime = userSelectedDate - currentTime;
+    const deltaTime = userSelectedDate - Date.now();
+
     if (deltaTime <= 0) {
       clearInterval(timerId);
+      timerId = null;
 
       updateTimer({
         days: 0,
